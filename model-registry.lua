@@ -3,6 +3,7 @@ local json = require("json")
 -- Initialize state to store models
 State = {
     Models = {},
+    UserInteractions = {}, -- Track user interactions with models
     Owner = ""  -- Optional: track contract owner
 }
 
@@ -27,34 +28,25 @@ end
 
 -- Register a new model
 Handle("RegisterModel", function(msg)
-    local From = msg.From
-    
-    -- Extract model details from tags
     local name = msg.Tags.name
-    local description = msg.Tags.description
-    local modelType = msg.Tags.modelType
-    local repo = msg.Tags.repo
-    local dataset = msg.Tags.dataset
-    local deployment = msg.Tags.deployment
-    local tags = msg.Tags.tags
-
-    -- Create model entry
     State.Models[name] = {
         name = name,
-        owner = From,
-        description = description,
-        modelType = modelType,
-        repo = repo,
-        dataset = dataset,
-        deployment = deployment,
-        tags = tags,
-        timestamp = os.time()
+        owner = msg.From,
+        description = msg.Tags.description,
+        modelType = msg.Tags.modelType,
+        repo = msg.Tags.repo,
+        dataset = msg.Tags.dataset,
+        deployment = msg.Tags.deployment,
+        tags = msg.Tags.tags,
+        downloadUrl = msg.Tags.downloadUrl,
+        category = msg.Tags.category,
+        metrics = {
+            downloads = 0,
+            likes = 0,
+            forks = 0
+        }
     }
-
-    return json.encode({
-        status = "success",
-        message = "Model registered successfully"
-    })
+    return json.encode({ status = "success" })
 end)
 
 -- Get all models
@@ -142,4 +134,96 @@ Handle("SearchModelsByType", function(msg)
     end
     
     return json.encode(results)
+end)
+
+-- Helper function to get user interaction key
+local function getUserInteractionKey(modelId, userAddress, actionType)
+    return modelId .. "_" .. userAddress .. "_" .. actionType
+end
+
+-- Update metrics handler with user tracking
+Handle("UpdateMetrics", function(msg)
+    local modelId = msg.Tags.modelId
+    local metricType = msg.Tags.metricType
+    local userAddress = msg.Tags.userAddress
+    
+    if not State.Models[modelId] then
+        return json.encode({
+            status = "error",
+            message = "Model not found"
+        })
+    end
+    
+    -- Initialize metrics if they don't exist
+    if not State.Models[modelId].metrics then
+        State.Models[modelId].metrics = {
+            downloads = 0,
+            likes = 0,
+            forks = 0
+        }
+    end
+    
+    -- Initialize user interactions if they don't exist
+    if not State.UserInteractions[modelId] then
+        State.UserInteractions[modelId] = {}
+    end
+    
+    local interactionKey = getUserInteractionKey(modelId, userAddress, metricType)
+    
+    -- Check if user has already performed this action
+    if metricType == "likes" or metricType == "forks" then
+        if State.UserInteractions[modelId][interactionKey] then
+            -- If already liked/forked, remove the interaction (toggle)
+            State.UserInteractions[modelId][interactionKey] = nil
+            State.Models[modelId].metrics[metricType] = 
+                math.max(0, (State.Models[modelId].metrics[metricType] or 0) - 1)
+            
+            return json.encode({
+                status = "success",
+                message = metricType .. " removed successfully",
+                metrics = State.Models[modelId].metrics
+            })
+        end
+    end
+    
+    -- Record the interaction
+    State.UserInteractions[modelId][interactionKey] = os.time()
+    
+    -- Update the metric
+    State.Models[modelId].metrics[metricType] = 
+        (State.Models[modelId].metrics[metricType] or 0) + 1
+        
+    return json.encode({
+        status = "success",
+        message = metricType .. " updated successfully",
+        metrics = State.Models[modelId].metrics
+    })
+end)
+
+-- Add a handler to check user interactions
+Handle("GetUserInteractions", function(msg)
+    local modelId = msg.Tags.modelId
+    local userAddress = msg.Tags.userAddress
+    
+    if not State.Models[modelId] then
+        return json.encode({
+            status = "error",
+            message = "Model not found"
+        })
+    end
+    
+    local interactions = {
+        likes = false,
+        forks = false
+    }
+    
+    if State.UserInteractions[modelId] then
+        interactions.likes = State.UserInteractions[modelId][getUserInteractionKey(modelId, userAddress, "likes")] ~= nil
+        interactions.forks = State.UserInteractions[modelId][getUserInteractionKey(modelId, userAddress, "forks")] ~= nil
+    end
+    
+    return json.encode({
+        status = "success",
+        interactions = interactions
+    })
 end)

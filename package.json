@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@permaweb/aoconnect": "0.0.61",
     "@protocol.land/sync": "0.5.0",
+    "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-scroll-area": "^1.2.1",
     "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-slider": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
     "arweave": "^1.15.5",
@@ -21,6 +24,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.460.0",
     "next": "14.2.16",
+    "openai": "^4.72.0",
     "react": "^18",
     "react-dom": "^18",
     "sonner": "^1.7.0",
