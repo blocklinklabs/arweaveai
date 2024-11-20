@@ -1,32 +1,162 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Registry - Decentralized AI Model & Dataset Platform
+
+![AI Registry Platform](/public/screenshot1.png)
+_Screenshot placeholder: Show the main platform interface with model listings_
+
+## Overview
+
+AI Registry is a decentralized platform for hosting, discovering, and sharing AI models and datasets, built on Arweave's permanent storage and AO's decentralized computation infrastructure. The platform enables researchers, developers, and organizations to:
+
+- 🤖 Share and discover AI models
+- 📊 Access curated datasets
+- 🎮 Test models in an interactive playground
+
+![Model Details](/public/Screenshot2.png)
+_Screenshot placeholder: Display a detailed view of a model page_
+
+## Features
+
+### Model Registry
+
+- Permanent storage on Arweave
+- Detailed model metadata and documentation
+- Version control and history tracking
+- Download statistics and popularity metrics
+- Community ratings and reviews
+
+### Dataset Management
+
+![Datasets Page](/public/Screenshot3.png)
+_Screenshot placeholder: Show the datasets listing page_
+
+- Curated AI training datasets
+- Integration with ArDrive for storage
+- Dataset size and format information
+- Usage tracking and analytics
+- License management
+
+### AI Playground
+
+![AI Playground](/public/Screenshot4.png)
+_Screenshot placeholder: Demonstrate the AI playground interface_
+
+- Test models directly in browser
+- Support for multiple AI providers:
+  - OpenAI (ChatGPT)
+  - Google (Gemini)
+  - Custom model inference
+- Interactive UI for model testing
+
+## Technology Stack
+
+- **Frontend**: Next.js 14, React, TypeScript
+- **Storage**: Arweave, ArDrive
+- **Computation**: AO (Arweave Computation)
+- **Authentication**: Arweave Wallet Kit
+- **Styling**: Tailwind CSS, Shadcn UI
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js 18.x or higher
+- Arweave Wallet (e.g., ArConnect)
+- AR tokens for transactions
+
+### Installation
+
+1. Clone the repository:
+
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/ai-registry.git
+cd ai-registry
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+```
 
-## Learn More
+3. Create a `.env.local` file:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+NEXT_PUBLIC_AO_PROCESS=your_ao_process_id
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Start the development server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev
+```
 
-## Deploy on Vercel
+Visit `http://localhost:3000` to see the application.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Smart Contract Integration
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The platform uses AO smart contracts for:
+
+- Model registration and updates
+- Download tracking
+- User interactions (likes, forks)
+- Dataset management
+
+### Key Contract Functions
+
+```lua
+-- Example AO contract interaction
+Handle("RegisterModel", function(msg)
+    local name = msg.Tags.name
+    State.Models[name] = {
+        name = name,
+        owner = msg.From,
+        description = msg.Tags.description,
+        // ... additional fields
+    }
+end)
+```
+
+## Deployment
+
+The application can be deployed to the Permaweb through Protocol Land:
+
+1. Build the application:
+
+```bash
+npm run build
+```
+
+2. Upload to Protocol Land
+3. Deploy using Dragon Deploy
+4. (Optional) Set up ArNS domain
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+### Development Workflow
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- 📚 [Documentation](https://docs.airegistry.arweave.net)
+- 💬 [Discord Community](https://discord.gg/airegistry)
+- 🐦 [Twitter](https://twitter.com/airegistry)
+
+## Acknowledgments
+
+- Arweave Team
+- Community Labs
+- All contributors and community members
+
+---
+
+Built with ❤️ on Arweave

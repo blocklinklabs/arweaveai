@@ -23,61 +23,44 @@ interface Dataset {
   license: string;
   tags: string[];
   owner: string;
-  timestamp: number;
+  timestamp?: number;
   downloads: number;
 }
 
 const placeholderDatasets: Dataset[] = [
   {
     id: "1",
-    name: "Common Crawl Web Dataset",
-    description:
-      "A massive web crawl dataset with over 100 billion tokens, perfect for training large language models and web analysis tasks.",
-    itemCount: 100_000_000,
-    size: "1.2 TB",
-    fileType: "JSON/TXT",
-    category: "Text",
-    useCase: "Language Model Training, Web Analysis",
-    ardriveLink: "https://ardrive.io/dataset1",
-    license: "CC-BY-4.0",
-    tags: ["web-crawl", "nlp", "text-corpus"],
-    owner: "0x123...abc",
-    timestamp: Date.now() - 1000000,
-    downloads: 1520,
+    name: "Simple Image Classifier",
+    description: "A CNN for basic image classification on MNIST.",
+    itemCount: 95,
+    size: "1.21 KiB",
+    fileType: "npz",
+    category: "Image",
+    useCase: "Image classification",
+    ardriveLink:
+      "https://ardrive.g8way.io/#/file/43e53171-f9a5-40d5-9d41-b36a9f261ef0/view",
+    license: "CC0",
+    tags: [" computer vision", "cnn", "image classification"],
+    owner: "fQQLQ6-f9i....Xh_xsU",
+    downloads: 2,
   },
   {
     id: "2",
-    name: "ImageNet-1K",
+    name: "Basic Sentiment Analysis Model",
     description:
-      "A large-scale image dataset with 1000 object categories, widely used for computer vision tasks and model training.",
-    itemCount: 1_000_000,
-    size: "150 GB",
-    fileType: "JPEG",
-    category: "Images",
-    useCase: "Image Classification, Object Detection",
-    ardriveLink: "https://ardrive.io/dataset2",
-    license: "Apache 2.0",
-    tags: ["computer-vision", "classification", "images"],
-    owner: "0x456...def",
+      "A simple logistic regression model for binary sentiment analysis.",
+    itemCount: 10,
+    size: "451B",
+    fileType: "CSV",
+    category: "Text",
+    useCase: "Text Classification",
+    ardriveLink:
+      "https://ardrive.g8way.io/#/file/0de7f576-4db5-439e-ade7-e37efcf1651e/view",
+    license: "CC0",
+    tags: ["nlp", "transformer", "bert"],
+    owner: "fQQLQ6-f9i....Xh_xsU",
     timestamp: Date.now() - 2000000,
-    downloads: 2340,
-  },
-  {
-    id: "3",
-    name: "LibriSpeech Audio Dataset",
-    description:
-      "High-quality audio dataset containing 1000 hours of English speech, perfect for speech recognition models.",
-    itemCount: 250_000,
-    size: "60 GB",
-    fileType: "WAV/MP3",
-    category: "Audio",
-    useCase: "Speech Recognition, Audio Processing",
-    ardriveLink: "https://ardrive.io/dataset3",
-    license: "MIT",
-    tags: ["speech", "audio", "english"],
-    owner: "0x789...ghi",
-    timestamp: Date.now() - 3000000,
-    downloads: 890,
+    downloads: 0,
   },
 ];
 
@@ -306,10 +289,7 @@ export default function Datasets() {
                       </div>
 
                       <div className="mt-6 flex justify-between items-center">
-                        <div className="text-sm text-white/40">
-                          Added{" "}
-                          {new Date(dataset.timestamp).toLocaleDateString()}
-                        </div>
+                        <div className="text-sm text-white/40">Added _</div>
                         <Button
                           onClick={() => {
                             window.open(dataset.ardriveLink, "_blank");
