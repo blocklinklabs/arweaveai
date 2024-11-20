@@ -3,7 +3,6 @@ import { ArweaveWalletKit, ConnectButton } from "arweave-wallet-kit";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChatGPTPlayground } from "@/components/playground/chatgpt-playground";
 import { GeminiPlayground } from "@/components/playground/gemini-playground";
@@ -25,9 +24,6 @@ export default function PlaygroundPage() {
         config={{
           permissions: ["ACCESS_ADDRESS", "SIGN_TRANSACTION", "DISPATCH"],
           ensurePermissions: true,
-          appInfo: {
-            name: "AI Model Registry",
-          },
         }}
       >
         <header className="sticky top-0 z-50 border-b border-white/5 bg-black/20 backdrop-blur-sm">

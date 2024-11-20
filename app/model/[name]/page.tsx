@@ -165,6 +165,7 @@ export default function ModelDetail() {
                       if (model.downloadUrl) {
                         window.open(model.downloadUrl, "_blank");
                         updateMetrics("downloads");
+                        toast.success("Model downloaded successfully!");
                       } else {
                         toast.error("Download URL not available");
                       }
@@ -227,7 +228,9 @@ export default function ModelDetail() {
                     <Calendar className="w-4 h-4" />
                     <span>
                       Published:{" "}
-                      {new Date(model.timestamp).toLocaleDateString()}
+                      {model.timestamp
+                        ? new Date(Number(model.timestamp)).toLocaleDateString()
+                        : "Date not available"}
                     </span>
                   </div>
                   {model.repo && (
@@ -273,10 +276,6 @@ export default function ModelDetail() {
                   ))}
                 </div>
               </div>
-
-              <Button className="w-full bg-indigo-500 hover:bg-indigo-600 text-white">
-                Deploy Model
-              </Button>
             </div>
           </div>
         </main>

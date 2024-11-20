@@ -22,13 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
 import {
-  Globe,
-  Brain,
-  Sparkles,
-  GitBranch,
-  Database,
   Loader2,
   AudioLines,
   Image,
@@ -49,19 +43,16 @@ import {
   Star,
   GitFork,
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
 import Link from "next/link";
 import { Logo } from "../components/ui/logo";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 const taskCategories = {
@@ -90,8 +81,35 @@ const taskCategories = {
   ],
 };
 
+const modelTypeColors = {
+  "text-generation": "bg-emerald-500/20 text-emerald-400",
+  "image-generation": "bg-purple-500/20 text-purple-400",
+  audio: "bg-blue-500/20 text-blue-400",
+};
+
+const categoryColors: { [key: string]: string } = {
+  "Audio-Text-to-Text": "bg-blue-500/20 text-blue-400",
+  "Image-Text-to-Text": "bg-violet-500/20 text-violet-400",
+  "Visual Question Answering": "bg-pink-500/20 text-pink-400",
+  "Document Question": "bg-amber-500/20 text-amber-400",
+  "Video-Text-to-Text": "bg-red-500/20 text-red-400",
+  "Any-to-Any": "bg-green-500/20 text-green-400",
+  "Depth Estimation": "bg-indigo-500/20 text-indigo-400",
+  "Image Classification": "bg-rose-500/20 text-rose-400",
+  "Object Detection": "bg-cyan-500/20 text-cyan-400",
+  "Image Segmentation": "bg-orange-500/20 text-orange-400",
+  "Text-to-Image": "bg-teal-500/20 text-teal-400",
+  "Image-to-Text": "bg-fuchsia-500/20 text-fuchsia-400",
+  "Text Generation": "bg-emerald-500/20 text-emerald-400",
+  "Text Classification": "bg-sky-500/20 text-sky-400",
+  "Token Classification": "bg-lime-500/20 text-lime-400",
+  Translation: "bg-purple-500/20 text-purple-400",
+  Summarization: "bg-yellow-500/20 text-yellow-400",
+};
+
 export default function Home() {
-  const AO_PROCESS = "EcOnTx9f5fjCXd82ujUiSucCfDlx_IvggLE5LJpCQ8g";
+  // const AO_PROCESS = "EcOnTx9f5fjCXd82ujUiSucCfDlx_IvggLE5LJpCQ8g";
+  const AO_PROCESS = "_bZ5nCd7EzCDon-xq1nuUFlOOyrg9kfBzpNWo0_NBPI";
 
   const [modelName, setModelName] = useState("");
   const [modelDescription, setModelDescription] = useState("");
@@ -99,7 +117,6 @@ export default function Home() {
   const [modelRepo, setModelRepo] = useState("");
   const [datasetUrl, setDatasetUrl] = useState("");
   const [modelType, setModelType] = useState("text-generation");
-  const [arweaveDeployUrl, setArweaveDeployUrl] = useState("");
   const [tags, setTags] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -108,14 +125,6 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [metrics, setMetrics] = useState({
-    downloads: 0,
-    likes: 0,
-    forks: 0,
-  });
-  const [userInteractions, setUserInteractions] = useState<
-    Record<string, { likes: boolean; forks: boolean }>
-  >({});
 
   const CACHE_KEY = "cached_models";
 
@@ -155,7 +164,6 @@ export default function Home() {
 
   useEffect(() => {
     fetchModels();
-    getModels();
   }, []);
 
   const registerModel = async () => {
@@ -197,7 +205,6 @@ export default function Home() {
         modelType: modelType,
         repo: modelRepo,
         dataset: datasetUrl,
-        deployment: arweaveDeployUrl,
         tags: tags,
         owner: window.arweaveWallet?.getActiveAddress(),
         timestamp: Date.now(),
@@ -223,13 +230,10 @@ export default function Home() {
       setModelDescription("");
       setModelRepo("");
       setDatasetUrl("");
-      setArweaveDeployUrl("");
       setTags("");
+      setDatasetUrl("");
 
-      toast.success("Model registered successfully!", {
-        description: `${modelName} has been added to the registry.`,
-        duration: 5000,
-      });
+      alert("Model registered successfully!");
     } catch (error) {
       console.error("Error registering model:", error);
       toast.error("Failed to register model", {
@@ -246,108 +250,14 @@ export default function Home() {
     registerModel();
   };
 
-  const getModels = async () => {
-    try {
-      setIsLoading(true);
-      const response = await message({
-        process: AO_PROCESS,
-        tags: [{ name: "Action", value: "GetModels" }],
-        signer: createDataItemSigner(window.arweaveWallet),
-      });
-
-      const r = await result({
-        message: response,
-        process: AO_PROCESS,
-      });
-
-      console.log("Models fetched:", r);
-      return r;
-    } catch (error) {
-      console.error("Error fetching models:", error);
-      return [];
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDeleteModel = async (modelName: string) => {
-    try {
-      setIsLoading(true);
-      const response = await message({
-        process: AO_PROCESS,
-        tags: [
-          { name: "Action", value: "DeleteModel" },
-          { name: "name", value: modelName },
-        ],
-        signer: createDataItemSigner(window.arweaveWallet),
-      });
-
-      const r = await result({
-        message: response,
-        process: AO_PROCESS,
-      });
-
-      // Update local cache by removing the deleted model
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        const { data: cachedModels, timestamp } = JSON.parse(cached);
-        const updatedModels = cachedModels.filter(
-          (model: any) => model.name !== modelName
-        );
-        localStorage.setItem(
-          CACHE_KEY,
-          JSON.stringify({
-            data: updatedModels,
-            timestamp,
-          })
-        );
-        setModels(updatedModels);
-      }
-
-      toast.success("Model deleted successfully!", {
-        description: `${modelName} has been removed from the registry.`,
-        duration: 5000,
-      });
-    } catch (error) {
-      console.error("Error deleting model:", error);
-      toast.error("Failed to delete model", {
-        description: "Please try again later.",
-        duration: 5000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSearchByType = async (type: string) => {
-    try {
-      setIsLoading(true);
-      const response = await message({
-        process: AO_PROCESS,
-        tags: [
-          { name: "Action", value: "SearchModelsByType" },
-          { name: "modelType", value: type },
-        ],
-        signer: createDataItemSigner(window.arweaveWallet),
-      });
-
-      const r = await result({
-        message: response,
-        process: AO_PROCESS,
-      });
-
-      console.log("Models by type:", r);
-      if (r && Object.keys(r).length > 0) {
-        const modelsArray = Object.entries(r).map(([name, model]) => ({
-          name,
-          ...model,
-        }));
-        setModels(modelsArray);
-      }
-    } catch (error) {
-      console.error("Error searching models:", error);
-    } finally {
-      setIsLoading(false);
+  const handleCategorySelect = (categoryName: string) => {
+    setSelectedCategory(categoryName);
+    // Filter models by category
+    const categoryModels = models.filter(
+      (model) => model.category === categoryName
+    );
+    if (categoryModels.length === 0) {
+      toast.info(`No models found in ${categoryName} category`);
     }
   };
 
@@ -369,98 +279,12 @@ export default function Home() {
     return matchesSearch && matchesType && matchesCategory;
   });
 
-  const handleCategorySelect = (categoryName: string) => {
-    setSelectedCategory(categoryName);
-    // Filter models by category
-    const categoryModels = models.filter(
-      (model) => model.category === categoryName
-    );
-    if (categoryModels.length === 0) {
-      toast.info(`No models found in ${categoryName} category`);
-    }
-  };
-
-  const updateMetrics = async (
-    modelId: string,
-    metricType: "downloads" | "likes" | "forks"
-  ) => {
-    if (!window.arweaveWallet) {
-      toast.error("Please connect your wallet first");
-      return;
-    }
-
-    try {
-      const response = await message({
-        process: AO_PROCESS,
-        tags: [
-          { name: "Action", value: "UpdateMetrics" },
-          { name: "modelId", value: modelId },
-          { name: "metricType", value: metricType },
-          {
-            name: "userAddress",
-            value: await window.arweaveWallet.getActiveAddress(),
-          },
-        ],
-        signer: createDataItemSigner(window.arweaveWallet),
-      });
-
-      const r = await result({
-        message: response,
-        process: AO_PROCESS,
-      });
-
-      if (r.status === "success") {
-        await fetchModels(); // Refresh the models list
-        toast.success(`${metricType} updated successfully!`);
-      } else {
-        throw new Error(r.message);
-      }
-    } catch (error) {
-      console.error(`Error updating ${metricType}:`, error);
-      toast.error(`Failed to update ${metricType}`);
-    }
-  };
-
-  const fetchUserInteractions = async (modelId: string) => {
-    if (!window.arweaveWallet) return;
-
-    try {
-      const userAddress = await window.arweaveWallet.getActiveAddress();
-      const response = await message({
-        process: AO_PROCESS,
-        tags: [
-          { name: "Action", value: "GetUserInteractions" },
-          { name: "modelId", value: modelId },
-          { name: "userAddress", value: userAddress },
-        ],
-        signer: createDataItemSigner(window.arweaveWallet),
-      });
-
-      const r = await result({
-        message: response,
-        process: AO_PROCESS,
-      });
-
-      if (r.status === "success") {
-        setUserInteractions((prev) => ({
-          ...prev,
-          [modelId]: r.interactions,
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching user interactions:", error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#030712]">
       <ArweaveWalletKit
         config={{
           permissions: ["ACCESS_ADDRESS", "SIGN_TRANSACTION", "DISPATCH"],
-          appInfo: {
-            name: "AI Model Registry",
-            logo: "https://your-logo-url.png",
-          },
+          ensurePermissions: true,
         }}
       >
         <header className="sticky top-0 z-50 border-b border-white/5 bg-black/20 backdrop-blur-sm">
@@ -566,7 +390,7 @@ export default function Home() {
               {filteredModels.map((model) => (
                 <div
                   key={model.name}
-                  className="rounded-lg border border-white/5 bg-white/[0.02] p-4"
+                  className="rounded-lg border border-white/5 bg-white/[0.02] p-4 hover:bg-white/[0.04] transition-colors"
                 >
                   <div className="flex justify-between">
                     <Link
@@ -587,17 +411,32 @@ export default function Home() {
                         </div>
                         <Badge
                           variant="secondary"
-                          className="bg-white/5 text-white/80"
+                          className={`${
+                            modelTypeColors[
+                              model.modelType as keyof typeof modelTypeColors
+                            ] || "bg-white/5 text-white/80"
+                          }`}
                         >
                           {model.modelType}
                         </Badge>
                       </div>
                       <div className="mt-4 flex flex-wrap gap-2">
+                        {model.category && (
+                          <Badge
+                            variant="outline"
+                            className={`${
+                              categoryColors[model.category] ||
+                              "bg-white/5 text-white/80"
+                            } border-0`}
+                          >
+                            {model.category}
+                          </Badge>
+                        )}
                         {model.tags?.split(",").map((tag: string) => (
                           <Badge
                             key={tag}
                             variant="outline"
-                            className="bg-white/5 border-white/10 text-white/80"
+                            className="bg-white/5 border-white/10 text-white/60 hover:text-white/90 transition-colors"
                           >
                             {tag.trim()}
                           </Badge>
@@ -607,15 +446,15 @@ export default function Home() {
                   </div>
 
                   <div className="mt-4 flex items-center gap-4 text-sm text-white/60">
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 hover:text-blue-400 transition-colors">
                       <Download className="h-4 w-4" />
                       {model.metrics?.downloads || 0} downloads
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 hover:text-pink-400 transition-colors">
                       <Star className="h-4 w-4" />
                       {model.metrics?.likes || 0} likes
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 hover:text-green-400 transition-colors">
                       <GitFork className="h-4 w-4" />
                       {model.metrics?.forks || 0} forks
                     </div>
@@ -628,31 +467,37 @@ export default function Home() {
       </ArweaveWalletKit>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="bg-gray-900 border-white/10 text-white">
-          <DialogHeader>
-            <DialogTitle>Add New Model</DialogTitle>
+        <DialogContent className="bg-[#030712] border-white/10 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="space-y-3 pb-4 border-b border-white/10">
+            <DialogTitle className="text-xl font-semibold">
+              Add New Model
+            </DialogTitle>
             <DialogDescription className="text-white/60">
               Register your AI model to the decentralized registry
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleModelSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleModelSubmit} className="space-y-6 py-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm text-white/60">Model Name</label>
+                <label className="text-sm font-medium text-white/80">
+                  Model Name
+                </label>
                 <Input
                   value={modelName}
                   onChange={(e) => setModelName(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-white/20 focus:ring-1 focus:ring-white/20"
                   placeholder="e.g., BERT-Base"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-white/60">Model Type</label>
+                <label className="text-sm font-medium text-white/80">
+                  Model Type
+                </label>
                 <Select value={modelType} onValueChange={setModelType}>
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                  <SelectTrigger className="bg-white/5 border-white/10 text-white focus:ring-1 focus:ring-white/20">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-900 border-gray-800">
@@ -669,36 +514,40 @@ export default function Home() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm text-white/60">Description</label>
+              <label className="text-sm font-medium text-white/80">
+                Description
+              </label>
               <Textarea
                 value={modelDescription}
                 onChange={(e) => setModelDescription(e.target.value)}
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/40 min-h-[100px]"
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/40 min-h-[100px] focus:border-white/20 focus:ring-1 focus:ring-white/20"
                 placeholder="Describe your model's capabilities and use cases..."
                 required
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm text-white/60">
-                  GitHub Repository
+                <label className="text-sm font-medium text-white/80">
+                  Protocol.land / GitHub Repository
                 </label>
                 <Input
                   value={modelRepo}
                   onChange={(e) => setModelRepo(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-white/20 focus:ring-1 focus:ring-white/20"
                   placeholder="https://github.com/..."
                   type="url"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-white/60">Dataset URL</label>
+                <label className="text-sm font-medium text-white/80">
+                  Dataset URL
+                </label>
                 <Input
                   value={datasetUrl}
                   onChange={(e) => setDatasetUrl(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-white/20 focus:ring-1 focus:ring-white/20"
                   placeholder="https://huggingface.co/datasets/..."
                   type="url"
                 />
@@ -706,38 +555,40 @@ export default function Home() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm text-white/60">Tags</label>
+              <label className="text-sm font-medium text-white/80">Tags</label>
               <Input
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-white/20 focus:ring-1 focus:ring-white/20"
                 placeholder="nlp, transformer, bert (comma separated)"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm text-white/60">
+              <label className="text-sm font-medium text-white/80">
                 Download URL (ArDrive)
               </label>
               <Input
                 value={downloadUrl}
                 onChange={(e) => setDownloadUrl(e.target.value)}
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-white/20 focus:ring-1 focus:ring-white/20"
                 placeholder="https://ardrive.io/..."
                 type="url"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm text-white/60">Category</label>
+              <label className="text-sm font-medium text-white/80">
+                Category
+              </label>
               <Select
                 value={selectedCategory || ""}
                 onValueChange={setSelectedCategory}
               >
-                <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                <SelectTrigger className="bg-white/5 border-white/10 text-white focus:ring-1 focus:ring-white/20">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-900 border-gray-800">
+                <SelectContent className="bg-gray-900 border-gray-800 max-h-[200px]">
                   {Object.entries(taskCategories).map(([category, tasks]) =>
                     tasks.map((task) => (
                       <SelectItem key={task.name} value={task.name}>
@@ -749,11 +600,11 @@ export default function Home() {
               </Select>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4">
+            <div className="flex justify-end gap-3 pt-6 border-t border-white/10">
               <Button
                 type="button"
                 variant="outline"
-                className="border-white/10 text-white hover:bg-white/5"
+                className="border-white/10 text-white hover:bg-white/5 focus:ring-1 focus:ring-white/20"
                 onClick={() => setIsModalOpen(false)}
               >
                 Cancel
@@ -761,7 +612,7 @@ export default function Home() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-indigo-500 hover:bg-indigo-600 text-white"
+                className="bg-indigo-500 hover:bg-indigo-600 text-white focus:ring-2 focus:ring-indigo-500/20"
               >
                 {isSubmitting ? (
                   <>

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Slider } from "@/components/ui/slider";
 import OpenAI from "openai";
 
 interface MemeGeneratorProps {
@@ -14,7 +13,6 @@ export function MemeGenerator({ apiKey }: MemeGeneratorProps) {
   const [prompt, setPrompt] = useState("");
   const [generatedImage, setGeneratedImage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [size, setSize] = useState(1024);
 
   const handleGenerate = async () => {
     if (!apiKey) {
@@ -33,7 +31,7 @@ export function MemeGenerator({ apiKey }: MemeGeneratorProps) {
         model: "dall-e-3",
         prompt: `Create a meme coin logo with the following description: ${prompt}. Make it creative, memorable, and suitable for a cryptocurrency project. The logo should be centered and isolated on a clean background.`,
         n: 1,
-        size: `${size}x${size}`,
+        size: "1024x1024",
         quality: "standard",
         style: "vivid",
       });
@@ -50,20 +48,6 @@ export function MemeGenerator({ apiKey }: MemeGeneratorProps) {
 
   return (
     <div className="space-y-4">
-      <div>
-        <label className="text-sm font-medium text-white/70">
-          Image Size: {size}x{size}
-        </label>
-        <Slider
-          value={[size]}
-          onValueChange={(value) => setSize(value[0])}
-          min={1024}
-          max={1024}
-          step={1024}
-          className="mt-2"
-        />
-      </div>
-
       <div className="space-y-2">
         <label className="text-sm font-medium text-white/70">
           Logo Description
