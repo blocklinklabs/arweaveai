@@ -12,17 +12,17 @@ AI Registry is a decentralized platform for hosting, discovering, and sharing AI
 - 🎮 Test models in an interactive playground
 
 ![Model Details](/public/screenshot2.png)
-_Screenshot placeholder: Display a detailed view of a model page_
+_Display a detailed view of a model page_
 
 ## Features
 
 ### Model Registry
 
-- Permanent storage on Arweave
-- Detailed model metadata and documentation
-- Version control and history tracking
-- Download statistics and popularity metrics
-- Community ratings and reviews
+- 🔒 Permanent, immutable storage powered by Arweave
+- 📦 Model source code hosted on protocol.land with version control
+- 📝 Rich model documentation with metadata, examples, and benchmarks
+- 🔄 Complete version history and model lineage tracking
+- 🏷️ Customizable tagging and categorization
 
 ### Dataset Management
 
