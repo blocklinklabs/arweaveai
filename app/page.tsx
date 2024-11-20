@@ -283,7 +283,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#030712]">
       <ArweaveWalletKit
         config={{
-          permissions: ["ACCESS_ADDRESS", "SIGN_TRANSACTION", "DISPATCH"],
+          permissions: ["ACCESS_ADDRESS", "SIGN_TRANSACTION"],
           ensurePermissions: true,
         }}
       >
