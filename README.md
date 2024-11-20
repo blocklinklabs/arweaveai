@@ -11,7 +11,7 @@ AI Registry is a decentralized platform for hosting, discovering, and sharing AI
 - 📊 Access curated datasets
 - 🎮 Test models in an interactive playground
 
-![Model Details](/public/Screenshot2.png)
+![Model Details](/public/screenshot2.png)
 _Screenshot placeholder: Display a detailed view of a model page_
 
 ## Features
@@ -26,7 +26,7 @@ _Screenshot placeholder: Display a detailed view of a model page_
 
 ### Dataset Management
 
-![Datasets Page](/public/Screenshot3.png)
+![Datasets Page](/public/screenshot3.png)
 _Screenshot placeholder: Show the datasets listing page_
 
 - Curated AI training datasets
@@ -37,7 +37,7 @@ _Screenshot placeholder: Show the datasets listing page_
 
 ### AI Playground
 
-![AI Playground](/public/Screenshot4.png)
+![AI Playground](/public/screenshot4.png)
 _Screenshot placeholder: Demonstrate the AI playground interface_
 
 - Test models directly in browser
