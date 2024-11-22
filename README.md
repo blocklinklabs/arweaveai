@@ -1,66 +1,111 @@
 # AI Registry - Decentralized AI Model & Dataset Platform
 
-![AI Registry Platform](/public/screenshot1.png)
-_Screenshot placeholder: Show the main platform interface with model listings_
+![AI Registry Platform](/public/screenshots/screenshot1.png)
+_Main dashboard showing model categories, search, and featured AI models_
 
 ## Overview
 
-AI Registry is a decentralized platform for hosting, discovering, and sharing AI models and datasets, built on Arweave's permanent storage and AO's decentralized computation infrastructure. The platform enables researchers, developers, and organizations to:
+AI Registry is a decentralized platform for hosting, discovering, and sharing AI models and datasets, built on Arweave's permanent storage and AO's decentralized computation infrastructure. The platform enables:
 
-- 🤖 Share and discover AI models
-- 📊 Access curated datasets
-- 🎮 Test models in an interactive playground
-
-![Model Details](/public/screenshot2.png)
-_Display a detailed view of a model page_
+- 🤖 Permanent, decentralized AI model hosting
+- 📊 Curated dataset management through ArDrive
+- 🤝 Community-driven model ratings and reviews
+- 🎮 Interactive model testing playground
+- 🤖 AI-powered chat agents for documentation
 
 ## Features
 
 ### Model Registry
 
-- 🔒 Permanent, immutable storage powered by Arweave
-- 📦 Model source code hosted on protocol.land with version control
-- 📝 Rich model documentation with metadata, examples, and benchmarks
-- 🔄 Complete version history and model lineage tracking
-- 🏷️ Customizable tagging and categorization
+![Model Listing](/public/screenshots/screenshot1.2.png)
+_Model listing page showing categorized AI models with metrics_
+
+- **Categories**
+  - Multimodal (Audio-Text, Image-Text, VQA)
+  - Computer Vision (Classification, Detection, Segmentation)
+  - Natural Language Processing (Generation, Translation)
+- **Model Features**
+  - 🔒 Permanent storage on Arweave
+  - 📦 Version control via Protocol.land integration
+  - 📊 Usage metrics (downloads, likes, forks)
+  - 🏷️ Rich tagging and categorization
+  - 💬 Community discussions and reviews
 
 ### Dataset Management
 
-![Datasets Page](/public/screenshot3.png)
-_Screenshot placeholder: Show the datasets listing page_
+![Dataset Explorer](/public/screenshots/screenshot3.png)
+_Dataset explorer showing available training datasets_
 
-- Curated AI training datasets
-- Integration with ArDrive for storage
-- Dataset size and format information
-- Usage tracking and analytics
-- License management
+- **Storage Options**
+  - Permanent storage via Arweave
+  - Temporary storage via ArFleet
+  - Direct ArDrive integration
+- **Dataset Features**
+  - 📊 Size and format information
+  - 📈 Usage analytics
+  - 🔑 License management
+  - 🔄 Version tracking
+  - 🔍 Advanced search and filtering
 
 ### AI Playground
 
-![AI Playground](/public/screenshot4.png)
-_Screenshot placeholder: Demonstrate the AI playground interface_
+![Playground Interface](/public/screenshots/screenshot4.png)
+_Interactive playground for testing AI models_
 
-- Test models directly in browser
-- Support for multiple AI providers:
-  - OpenAI (ChatGPT)
+- **Supported Providers**
+  - OpenAI (GPT-3.5, GPT-4)
   - Google (Gemini)
   - Custom model inference
-- Interactive UI for model testing
+- **Features**
+  - Real-time model testing
+  - Parameter adjustment
+  - Response visualization
+  - Performance metrics
+  - API key management
+
+### AI Agents
+
+![AI Agents](/public/screenshots/screenshot5.png)
+![AI Agents](/public/screenshots/screenshot6.png)
+_AI agents page showing documentation assistants_
+
+- **Agent Types**
+  - Documentation assistants
+  - Support agents
+  - Research assistants
+- **Features**
+  - Custom knowledge base training
+  - Real-time chat interface
+  - Integration with existing documentation
+  - Usage analytics
 
 ## Technology Stack
 
-- **Frontend**: Next.js 14, React, TypeScript
-- **Storage**: Arweave, ArDrive
-- **Computation**: AO (Arweave Computation)
-- **Authentication**: Arweave Wallet Kit
-- **Styling**: Tailwind CSS, Shadcn UI
+- **Frontend**:
+
+  - Next.js 14
+  - React
+  - TypeScript
+  - Tailwind CSS
+  - Shadcn UI
+
+- **Blockchain & Storage**:
+
+  - Arweave (permanent storage)
+  - ArDrive (dataset management)
+  - AO (smart contracts)
+  - ArFleet (temporary storage)
+
+- **Authentication**:
+  - Arweave Wallet Kit
+  - ArConnect integration
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18.x or higher
-- Arweave Wallet (e.g., ArConnect)
+- Arweave Wallet (ArConnect)
 - AR tokens for transactions
 
 ### Installation
@@ -94,31 +139,31 @@ Visit `http://localhost:3000` to see the application.
 
 ## Smart Contract Integration
 
-The platform uses AO smart contracts for:
-
-- Model registration and updates
-- Download tracking
-- User interactions (likes, forks)
-- Dataset management
-
-### Key Contract Functions
+The platform uses AO smart contracts for model and agent management. Key features include:
 
 ```lua
--- Example AO contract interaction
+-- Example model registration
 Handle("RegisterModel", function(msg)
     local name = msg.Tags.name
     State.Models[name] = {
         name = name,
         owner = msg.From,
         description = msg.Tags.description,
-        // ... additional fields
+        modelType = msg.Tags.modelType,
+        category = msg.Tags.category,
+        metrics = {
+            downloads = 0,
+            likes = 0,
+            forks = 0
+        }
     }
+    return json.encode({ status = "success" })
 end)
 ```
 
 ## Deployment
 
-The application can be deployed to the Permaweb through Protocol Land:
+### Building for Production
 
 1. Build the application:
 
@@ -126,9 +171,17 @@ The application can be deployed to the Permaweb through Protocol Land:
 npm run build
 ```
 
-2. Upload to Protocol Land
-3. Deploy using Dragon Deploy
-4. (Optional) Set up ArNS domain
+2. Deploy to Protocol Land:
+   - Upload build folder contents
+   - Use Dragon Deploy for deployment
+   - Set up ArNS domain (optional)
+
+### ArNS Setup
+
+1. Obtain $tIO tokens from AR.IO Discord
+2. Visit arns.app to register domain
+3. Configure DNS settings
+4. Link deployment transaction
 
 ## Contributing
 
@@ -145,16 +198,11 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
-
-- 📚 [Documentation](https://docs.airegistry.arweave.net)
-- 💬 [Discord Community](https://discord.gg/airegistry)
-- 🐦 [Twitter](https://twitter.com/airegistry)
-
 ## Acknowledgments
 
 - Arweave Team
 - Community Labs
+- Protocol Land Team
 - All contributors and community members
 
 ---

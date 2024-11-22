@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const Logo = () => (
   <div className="flex items-center gap-3">
     <svg
@@ -33,11 +35,13 @@ export const Logo = () => (
       <circle cx="16" cy="23" r="2" className="fill-purple-500" />
       <circle cx="16" cy="9" r="2" className="fill-indigo-400" />
     </svg>
-    <div className="flex flex-col">
-      <span className="text-white font-semibold text-xl leading-none">
-        AI Registry
-      </span>
-      <span className="text-white/40 text-xs">Powered by Arweave</span>
-    </div>
+    <Link href={"/"}>
+      <div className="flex flex-col">
+        <span className="text-white font-semibold text-xl leading-none">
+          AI Registry
+        </span>
+        <span className="text-white/40 text-xs">Powered by Arweave</span>
+      </div>
+    </Link>
   </div>
 );

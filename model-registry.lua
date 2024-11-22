@@ -1,10 +1,11 @@
 local json = require("json")
 
--- Initialize state to store models
+-- Initialize state to store models and agents
 State = {
     Models = {},
-    UserInteractions = {}, -- Track user interactions with models
-    Owner = ""  -- Optional: track contract owner
+    Agents = {},  -- New agents storage
+    UserInteractions = {},
+    Owner = ""
 }
 
 function Log(msg)
@@ -226,4 +227,69 @@ Handle("GetUserInteractions", function(msg)
         status = "success",
         interactions = interactions
     })
+end)
+
+-- Register a new agent
+Handle("RegisterAgent", function(msg)
+    local name = msg.Tags.name
+    State.Agents[name] = {
+        name = name,
+        owner = msg.From,
+        description = msg.Tags.description,
+        documents = msg.Tags.documents, -- Array of document URLs or content
+        type = "agent",
+        model = msg.Tags.model or "gpt-4", -- Default to GPT-4
+        created = os.time(),
+        metrics = {
+            interactions = 0,
+            likes = 0
+        }
+    }
+    return json.encode({ status = "success" })
+end)
+
+-- Get all agents
+Handle("GetAgents", function(msg)
+    return json.encode(State.Agents)
+end)
+
+-- Get specific agent
+Handle("GetAgent", function(msg)
+    local agentName = msg.Tags.name
+    if State.Agents[agentName] then
+        return json.encode(State.Agents[agentName])
+    else
+        return json.encode({
+            status = "error",
+            message = "Agent not found"
+        })
+    end
+end)
+
+-- Update agent (only by owner)
+Handle("UpdateAgent", function(msg)
+    local From = msg.From
+    local agentName = msg.Tags.name
+    
+    if State.Agents[agentName] and State.Agents[agentName].owner == From then
+        if msg.Tags.description then
+            State.Agents[agentName].description = msg.Tags.description
+        end
+        if msg.Tags.documents then
+            State.Agents[agentName].documents = msg.Tags.documents
+        end
+        if msg.Tags.model then
+            State.Agents[agentName].model = msg.Tags.model
+        end
+        
+        return json.encode({
+            status = "success",
+            message = "Agent updated successfully"
+        })
+    else
+        return json.encode({
+            status = "error",
+            message = "Unauthorized or agent not found"
+        })
+    end
 end)

@@ -47,6 +47,12 @@ export default function PlaygroundPage() {
                 Datasets
               </Link>
               <Link
+                href="/agents"
+                className="text-sm font-medium text-white/70 hover:text-white"
+              >
+                Agents
+              </Link>
+              <Link
                 href="/playground"
                 className="text-sm font-medium text-white/70 hover:text-white"
               >

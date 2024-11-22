@@ -109,7 +109,8 @@ const categoryColors: { [key: string]: string } = {
 
 export default function Home() {
   // const AO_PROCESS = "EcOnTx9f5fjCXd82ujUiSucCfDlx_IvggLE5LJpCQ8g";
-  const AO_PROCESS = "_bZ5nCd7EzCDon-xq1nuUFlOOyrg9kfBzpNWo0_NBPI";
+  // const AO_PROCESS = "_bZ5nCd7EzCDon-xq1nuUFlOOyrg9kfBzpNWo0_NBPI";
+  const AO_PROCESS = "OLa6vFiZacT4KxDwbqDdA1zU6fc_QyQYkhqB52tiWbA";
 
   const [modelName, setModelName] = useState("");
   const [modelDescription, setModelDescription] = useState("");
@@ -308,6 +309,12 @@ export default function Home() {
                 Datasets
               </Link>
               <Link
+                href="/agents"
+                className="text-sm font-medium text-white/70 hover:text-white"
+              >
+                Agents
+              </Link>
+              <Link
                 href="/playground"
                 className="text-sm font-medium text-white/70 hover:text-white"
               >
@@ -406,7 +413,8 @@ export default function Home() {
                             {model.name}
                           </h3>
                           <p className="mt-1 text-sm text-white/60">
-                            {model.description}
+                            {model.description?.slice(0, 100)}
+                            {model.description?.length > 100 ? "..." : ""}
                           </p>
                         </div>
                         <Badge
