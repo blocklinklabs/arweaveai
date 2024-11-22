@@ -2,8 +2,7 @@ import OpenAI from "openai";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-  apiKey:
-    "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",
+  apiKey: "",
 });
 
 export async function POST(req: Request) {
