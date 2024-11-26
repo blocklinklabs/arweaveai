@@ -5,7 +5,7 @@ _Main dashboard showing model categories, search, and featured AI models_
 
 ## Overview
 
-AI Registry is a decentralized platform for hosting, discovering, and sharing AI models and datasets, built on Arweave's permanent storage and AO's decentralized computation infrastructure. The platform enables:
+Arweave AI Registry is a decentralized platform for hosting, discovering, and sharing AI models and datasets, built on Arweave's permanent storage and AO's decentralized computation infrastructure. The platform enables:
 
 - 🤖 Permanent, decentralized AI model hosting
 - 📊 Curated dataset management through ArDrive

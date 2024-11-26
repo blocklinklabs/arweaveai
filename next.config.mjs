@@ -1,12 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    // Disable ESLint during production builds
-    ignoreDuringBuilds: true,
+  output: "standalone",
+  images: {
+    domains: ["arweave.net"],
+    unoptimized: true,
   },
-  typescript: {
-    // Disable TypeScript during production builds
-    ignoreBuildErrors: true,
+  experimental: {
+    // Enable if needed
+    // serverActions: true,
+  },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+    return config;
   },
 };
 
